@@ -5,6 +5,8 @@ from datetime import datetime
 from urllib.parse import urljoin
 
 import requests
+import jwt
+import time
 
 
 class ZoomClient(object):
@@ -68,7 +70,7 @@ class ZoomRecording(object):
 
     def filter_meetings(self, meetings):
         for m in meetings:
-            if m.get("duration", 0) < self.duration_min:
+            if m.get("duration", 0) < int(self.duration_min):
                 continue
 
             if self.filter_meeting_by_name and m.get("topic").strip() not in self.only_meeting_names:
@@ -98,10 +100,12 @@ class ZoomRecording(object):
                 prefix = i or ''
                 filename = self._get_output_filename(meeting, prefix)
                 save_path = self._get_output_path(filename, save_dir)
-                self._real_download_file(session,
+                if self._real_download_file(session,
                                          video_data.get('download_url'),
-                                         save_path)
-                print('Downloaded the file: {}'.format(video_data.get('download_url')))
+                                         save_path):
+                    print('Downloaded the file: {}'.format(video_data.get('download_url')))
+                else:
+                    print("Error while downloading: {}".format(video_data.get('download_url')))
                 self._save_to_db(downloaded_files, rid)
                 # TODO Remove video processing
 
@@ -132,12 +136,24 @@ class ZoomRecording(object):
         return os.path.join(save_dir, fname)
 
     def _real_download_file(self, session, url, fpath):
-        response = session.get(url)
+        encoded_jwt = self._get_jwt_key()
+        download_url = url+"?access_token="+encoded_jwt
+        response = session.get(download_url)
         if response.status_code == 200:
             with open(fpath.encode('utf-8'), 'wb') as f:
                 f.write(response.content)
             return True
         return False
+
+    def _get_jwt_key(self):
+        cur_ts = time.time()
+        encoded_jwt = jwt.encode({
+            "aud": None,
+            "iss": self.client.api_key,
+            "exp": cur_ts + 60 * 60 * 24,
+            "iat": cur_ts
+        }, self.client.api_secret, algorithm='HS256')
+        return encoded_jwt.decode("utf-8")
 
     def _save_to_db(self, downloaded_files, recording_id):
         with open(downloaded_files, 'a+') as f:

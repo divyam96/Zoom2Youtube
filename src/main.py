@@ -60,7 +60,8 @@ if __name__ == '__main__':
         youtube = YoutubeRecording(
             GOOGLE_CLIENT_ID,
             GOOGLE_CLIENT_SECRET,
-            GOOGLE_REFRESH_TOKEN
+            GOOGLE_REFRESH_TOKEN,
+            video_handler_class=None
         )
         youtube.upload_from_dir(VIDEO_DIR)
         print('End.')

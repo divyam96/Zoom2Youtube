@@ -97,7 +97,9 @@ class YoutubeRecording(object):
                  refresh_token,
                  video_handler_class=FFMpegHandler):
         self.client = YoutubeClient(client_id, client_sercet, refresh_token)
-        self.video_handler = video_handler_class()
+        self.video_handler = None
+        if video_handler_class:
+            self.video_handler = video_handler_class()
 
     def upload_from_dir(self, video_dir: str,
                         privacy_status='unlisted',
