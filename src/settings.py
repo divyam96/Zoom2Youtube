@@ -34,9 +34,17 @@ ZAPIER_URL = os.environ.get('ZAPIER_URL')
 DOWNLOADED_FILES = join(BASE_DIR, 'downloaded')
 LOCK_FILE = join(BASE_DIR, 'lock')
 
+AIR_TABLE_API_KEY = os.environ.get('AIR_TABLE_API_KEY')
+AIR_TABLE_BASE_KEY = os.environ.get('AIR_TABLE_BASE_KEY')
+AIR_TABLE_TABLE_NAME = os.environ.get('AIR_TABLE_TABLE_NAME')
+AIR_TABLE_TABLE_COLUMNS = [
+    n.strip() for n in os.environ.get("AIR_TABLE_TABLE_COLUMNS", "").split(",")
+]
+
 
 WEBHOOK_BACKEND_PIPELINES = [
     'webhooks.backends.slack.SlackClient',
+    'webhooks.backends.air_table.AirTableClient'
 ]
 
 MIN_DURATION = os.environ.get('MIN_DURATION') or 10  # minute

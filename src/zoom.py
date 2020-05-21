@@ -97,7 +97,7 @@ class ZoomRecording(object):
                 if not self._is_downloaded(downloaded_files, rid):
                     continue
 
-                prefix = i or ''
+                prefix = ' meeting_'+rid[0:5]
                 filename = self._get_output_filename(meeting, prefix)
                 save_path = self._get_output_path(filename, save_dir)
                 if self._real_download_file(session,
