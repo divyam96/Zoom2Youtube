@@ -78,7 +78,7 @@ To get the keys, follow these steps:
 4. Turn on `YouTube Data API v3`
 5. Follow the link: https://console.developers.google.com/apis/credentials
 6. create OAuth client credentials.
-7. Select Other types or `Other` (depends on localization), create
+7. Select `Desktop` as type of application, create
 8. Enter `Client ID` in `GOOGLE_CLIENT_ID` and `Client Secret` in `GOOGLE_CLIENT_SECRET`
 
 To get the `GOOGLE_REFRESH_TOKEN` follow these steps:
@@ -106,8 +106,12 @@ Add the following keys to the `.env` file
 1. Enter the recipients (separated with commas) in `SLACK_CHANNEL`, for example `SLACK_CHANNEL=#my_cannel,@my_user`
 2. Enter the slack token in `SLACK_TOKEN`
 
+Step 5 - AirTable keys
+-----------------------
+1. `AIR_TABLE_API_KEY`: Airtable api key from personal account
+2. `AIR_TABLE_BASE_KEY`: Unique key to identify airtable base.
 
-Step 5 - Check keys
+Step 6 - Check keys
 -----------------------
 
 To make sure all the keys were entered into the `.env` file, run the script in docker container
@@ -117,7 +121,7 @@ To make sure all the keys were entered into the `.env` file, run the script in d
 ```
 
 
-Step 6 - Run the app
+Step 7 - Run the app
 -------------------------
 
 Launch the container:
@@ -167,6 +171,11 @@ GOOGLE_CODE=DDDDDDDDDDDDDD
 
 SLACK_CHANNEL=@user
 SLACK_TOKEN=AAAAAAAAAAAAA
+
+AIR_TABLE_API_KEY=keyAAAAAAAAAAAAAAA
+AIR_TABLE_BASE_KEY=appAAAAAAAA
+AIR_TABLE_TABLE_NAME=Zoom Recordings
+AIR_TABLE_TABLE_COLUMNS=Recording Title,Youtube link
 ```
 
 
