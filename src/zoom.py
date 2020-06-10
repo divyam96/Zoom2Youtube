@@ -2,28 +2,19 @@
 
 import os.path
 from datetime import datetime
-from urllib.parse import urljoin
+from zoomus import ZoomClient
 
 import requests
 import jwt
 import time
 
 
-class ZoomClient(object):
-    BASE_URL = 'https://api.zoom.us/v1/'
+class ZoomSessionClient(object):
     SIGNIN_URL = 'https://api.zoom.us/signin'
 
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
-
-    def post(self, api_url, **kwargs):
-        data = {'api_key': self.api_key, 'api_secret': self.api_secret}
-        if kwargs:
-            data.update(kwargs)
-        url = self._join_url(api_url)
-        response = requests.post(url, data)
-        return response
 
     def session(self, email, password):
         session = requests.Session()
@@ -31,14 +22,10 @@ class ZoomClient(object):
             'content-type': 'application/x-www-form-urlencoded'
         })
         response = session.post(
-            ZoomClient.SIGNIN_URL, data={'email': email, 'password': password}
+            ZoomSessionClient.SIGNIN_URL, data={'email': email, 'password': password}
         )
         return session, response
 
-    def _join_url(self, path):
-        if path.startswith('/'):
-            path = path[1:]
-        return urljoin(ZoomClient.BASE_URL, path)
 
 
 class ZoomRecording(object):
@@ -51,6 +38,7 @@ class ZoomRecording(object):
                  only_meeting_names=None):
 
         self.client = ZoomClient(api_key, api_secret)
+        self.session_client = ZoomSessionClient(api_key, api_secret)
         self.host_id = host_id
 
         self.duration_min = duration_min
@@ -58,11 +46,11 @@ class ZoomRecording(object):
         self.only_meeting_names = only_meeting_names or []
 
     def list(self):
-        response = self.client.post("/recording/list", host_id=self.host_id)
+        response = self.client.recording.list(user_id=self.host_id)
         return response.json()
 
     def delete(self, meeting_id):
-        response = self.client.post("/recording/delete", meeting_id=meeting_id)
+        response = self.client.meeting.delete(id=meeting_id)
         return response.json()
 
     def get_meetings(self):
@@ -79,7 +67,7 @@ class ZoomRecording(object):
             yield m
 
     def download_meetings(self, email, password, save_dir, downloaded_files):
-        session, response = self.client.session(email, password)
+        session, response = self.session_client.session(email, password)
         if response.status_code != 200:
             session.close()
             return
