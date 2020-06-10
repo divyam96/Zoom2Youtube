@@ -33,6 +33,7 @@ class ZoomRecording(object):
                  api_key,
                  api_secret,
                  host_id,
+                 start_date,
                  duration_min=10,
                  filter_meeting_by_name=False,
                  only_meeting_names=None):
@@ -40,13 +41,15 @@ class ZoomRecording(object):
         self.client = ZoomClient(api_key, api_secret)
         self.session_client = ZoomSessionClient(api_key, api_secret)
         self.host_id = host_id
+        self.start_date = start_date
 
         self.duration_min = duration_min
         self.filter_meeting_by_name = filter_meeting_by_name
         self.only_meeting_names = only_meeting_names or []
 
     def list(self):
-        response = self.client.recording.list(user_id=self.host_id)
+        query_params = {'user_id': self.host_id, 'from': self.start_date}
+        response = self.client.recording.list(**query_params)
         return response.json()
 
     def delete(self, meeting_id):

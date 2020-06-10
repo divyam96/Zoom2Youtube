@@ -48,6 +48,7 @@ WEBHOOK_BACKEND_PIPELINES = [
 ]
 
 MIN_DURATION = os.environ.get('MIN_DURATION') or 10  # minute
+START_DATE = os.environ.get('START_DATE')
 
 FILTER_MEETING_BY_NAME = os.environ.get(
     "FILTER_MEETING_BY_NAME", "false"
