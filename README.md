@@ -1,20 +1,4 @@
-![Zoom2youtube showcase](http://i.imgur.com/snCLd13.gif)
-
-↓↓↓
-
 ![Zoom2youtube slack notifications](http://i.imgur.com/2nxeNBG.png)
-
-# Zoom2Youtube is a utility for transferring video recordings from the Zoom.us to YouTube
-
-At [Welltory](https://welltory.com), we hold and record 3-4 virtual meetings every day. The easiest way is to record meetings in [zoom.us](https://zoom.us), then upload them to YouTube where they can be accessed by anyone, from any device: phones, Chromecast, etc. We’ve automated video transfers from Zoom to YouTube, added notifications, and now every recording is automatically dropped into a Slack channel. We use privacy settings (**unlisted**) on YouTube to make sure people who aren’t on the team don’t have access to our meetings.
-
-The project is written in Python and launched in Docker. This simplifies the project’s initial deployment.
-
-# About
-
-Disclaimer: The utility is supplied "AS IS" without any warranties.
-
-You can reach us at github@welltory.com
 
 # Features
 
@@ -27,22 +11,10 @@ You can reach us at github@welltory.com
 Quick Start Guide
 =========
 
-Step 1 - Set up Docker
-------------------------
-
-Install Docker and Docker-Compose
-
-1. Docker installation instructions: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
-2. Docker-compose installation instructions: https://docs.docker.com/compose/install/#alternative-install-options
-
-Then create a Docker image. To do this, enter the command:
-
-```
-    $ make build
-```
 
 
-Step 2 - set up Zoom
+
+Step 1 - set up Zoom
 ----------------------
 
 You need to create a `.env` file in the root directory of the project, specifying the keys listed below:
@@ -62,7 +34,7 @@ To get the keys, follow these steps:
 6. Enter the `Host User ID` in `ZOOM_HOST_ID`
 
 
-Step 3 - Set up Youtube
+Step 2 - Set up Youtube
 -------------------------
 
 Add the following keys to the `.env` file
@@ -87,15 +59,14 @@ To get the `GOOGLE_REFRESH_TOKEN` follow these steps:
 2. Select the Google account you need access for
 3. Get access
 4. Enter the token in the .env file, in the `.env` in the `GOOGLE_CODE` field
-5. Run the script in docker container
+5. Run the following script 
 ```
-    $ docker-compose run app bash
     $ python3.6 src/get_google_refresh_token.py`
 ```
 6. Enter the refresh token in the `.env` file, in the `GOOGLE_REFRESH_TOKEN` field
 
 
-Step 4 - Set up Slack
+Step 3 - Set up Slack
 -----------------------
 
 Add the following keys to the `.env` file
@@ -106,12 +77,12 @@ Add the following keys to the `.env` file
 1. Enter the recipients (separated with commas) in `SLACK_CHANNEL`, for example `SLACK_CHANNEL=#my_cannel,@my_user`
 2. Enter the slack token in `SLACK_TOKEN`
 
-Step 5 - AirTable keys
+Step 4 - AirTable keys
 -----------------------
 1. `AIR_TABLE_API_KEY`: Airtable api key from personal account
 2. `AIR_TABLE_BASE_KEY`: Unique key to identify airtable base.
 
-Step 6 - Check keys
+Step 5 - Check keys
 -----------------------
 
 To make sure all the keys were entered into the `.env` file, run the script in docker container
@@ -124,35 +95,8 @@ To make sure all the keys were entered into the `.env` file, run the script in d
 Step 7 - Run the app
 -------------------------
 
-Launch the container:
-```
-    $ make up
-```
+Build the image as specified by Dockerfile and run the container to launch the app.
 
-
-Another way to run the app, through virtualenv
-------------------------------------------------------------------------
-
-1. Create a virtual environment
-```
-    $ virtualenv venv -p /usr/bin/python3 --no-site-package
-```
-2. Activate virtual environment
-```
-    $ source venv/bin/activate
-```
-3. Establish requirements
-```
-    $ pip install -r requirements.txt
-```
-4. Copy cron config
-```
-    $ sudo cp cron/crontab /etc/cron.d/zoom2youtube-cron
-```
-5. Restart cron
-```
-    $  sudo service cron restart
-```
 
 Sample .env file
 -----------------
