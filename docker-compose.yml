@@ -1,9 +1,0 @@
-version: '2'
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: bash -c  "crontab cron/crontab && service cron start && tail -f /var/log/cron.log"
-    volumes:
-     - .:/opt/app
