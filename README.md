@@ -92,7 +92,7 @@ To make sure all the keys were entered into the `.env` file, run the script in d
 ```
 
 
-Step 7 - Run the app
+Step 6 - Run the app
 -------------------------
 
 Build the image as specified by Dockerfile and run the container to launch the app.
