@@ -19,6 +19,9 @@ from settings import (
     FILTER_MEETING_BY_NAME,
     ONLY_MEETING_NAMES,
 )
+
+from s3_constants import S3_BUCKET, S3_LOG_PATH, S3_VIDEO_PREFIX
+from s3 import S3Sync
 from youtube import YoutubeRecording
 from zoom import ZoomRecording
 
@@ -40,6 +43,15 @@ class lock(object):
 if __name__ == '__main__':
     with lock(LOCK_FILE):
         print('Start...')
+        # Sync local file system buffer to S3
+        s3_sync = S3Sync()
+
+        s3_sync.download(local_log_path=DOWNLOADED_FILES,
+                         local_video_dir=VIDEO_DIR,
+                         bucket=S3_BUCKET,
+                         s3_log_path=S3_LOG_PATH,
+                         s3_video_prefix=S3_VIDEO_PREFIX)
+
         # download videos from zoom
         zoom = ZoomRecording(
             ZOOM_KEY,
@@ -66,4 +78,14 @@ if __name__ == '__main__':
             video_handler_class=None
         )
         youtube.upload_from_dir(VIDEO_DIR)
+
+        s3_sync.empty_buffer(bucket=S3_BUCKET,
+                             prefix=S3_VIDEO_PREFIX)
+
+        s3_sync.upload(local_log_path=DOWNLOADED_FILES,
+                       local_video_dir=VIDEO_DIR,
+                       s3_bucket=S3_BUCKET,
+                       s3_log_path=S3_LOG_PATH,
+                       s3_video_prefix=S3_VIDEO_PREFIX)
+
         print('End.')

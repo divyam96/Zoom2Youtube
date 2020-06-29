@@ -1,6 +1,6 @@
 FROM python:3.7.3-slim-stretch
 
-RUN apt-get update && apt-get install -y build-essential curl python3.7-dev python3-pip
+RUN apt-get update && apt-get install -y build-essential curl python3 python3-pip
 RUN python3.7 -m pip install pip --upgrade
 RUN python3.7 -m pip install wheel
 
@@ -15,4 +15,6 @@ RUN pip3 install -r requirements.txt
 
 WORKDIR /opt/app
 
-RUN touch /var/log/cron.log
+COPY src src/
+COPY run_application.sh .
+CMD  bash /opt/app/run_application.sh
